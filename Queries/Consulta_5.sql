@@ -1,27 +1,30 @@
-with
+--Consulta 5 - Agenda Varian: Captura informações de agendamento do AL1
+
+WITH
+
 BS_ATIVIDADES AS (
 	SELECT
 		*
 	FROM
 		(
-		select
+		SELECT
 				
 				 AT.DimPatientID
 				,AC.ActivityCategoryCode	AS RECURSO_CATEGORIA
-				,AC.ActivityCode		AS NOM_ATIVIDADE
-				,US1.UserId			AS ID_RECURSO_ATENDIMENTO
-				,US1.DisplayName		AS NOM_RECURSO
+				,AC.ActivityCode			AS NOM_ATIVIDADE
+				,US1.UserId					AS ID_RECURSO_ATENDIMENTO
+				,US1.DisplayName			AS NOM_RECURSO
 				,AT.AppointmentStatus		AS STATUS
 				,AppointmentDateTime		AS data_agendamento_atv
-				,ScheduledEndTime		AS data_vencimento_agendamento
+				,ScheduledEndTime			AS data_vencimento_agendamento
 				,AT.ActivityStartDateTime	AS DATA_INI_ATIVIDADE
 				,AT.ActivityEndDateTime		AS DATA_FIM_ATIVIDADE
 				,ROW_NUMBER() OVER (PARTITION BY AT.DimPatientID ORDER BY ScheduledEndTime ASC) AS Ordem_Tratamento
-		from
+		FROM
 							[variandw].[DWH].[DimActivityTransaction]	AS AT (NOLOCK)
 				INNER JOIN	[variandw].[DWH].[DimActivity]				AS AC (NOLOCK) ON AC.DimActivityID = AT.DimActivityID
-				LEFT  JOIN	[variandw].[DWH].[DimUser]				AS US1 (NOLOCK) ON US1.DimResourceID = AT.DimResourceID
-		where
+				LEFT  JOIN	[variandw].[DWH].[DimUser]					AS US1 (NOLOCK) ON US1.DimResourceID = AT.DimResourceID
+		WHERE
 					1=1
 				AND AppointmentResourceStatus NOT IN ('Deleted')
 				AND AppointmentStatus NOT IN ('Cancelled')
@@ -43,4 +46,3 @@ SELECT
 		,Ordem_Tratamento
 FROM
 		BS_ATIVIDADES
-		

@@ -1,3 +1,5 @@
+--Consulta 6 - Agenda Elekta: Captura informações de agendamento do AL2 e AL3
+
 WITH BS_TREATMENT AS (
 	SELECT DISTINCT
 			 CAST(TT.CREATE_DTTM AS DATE) AS DT_TRATAMENTO
